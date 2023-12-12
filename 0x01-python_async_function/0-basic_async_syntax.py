@@ -1,7 +1,7 @@
+#!/usr/bin/env python3
 """basic asyncio syntax"""
 import asyncio
 import random
-import time
 
 
 async def wait_random(max_delay: int = 10) -> int:
