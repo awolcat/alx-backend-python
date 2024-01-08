@@ -2,7 +2,7 @@
 """Defines a test class"""
 import unittest
 from typing import *
-from utils import access_nested_map, get_json
+from utils import access_nested_map, get_json, memoize
 from parameterized import parameterized
 from unittest.mock import Mock, patch
 
@@ -43,3 +43,27 @@ class TestGetJson(unittest.TestCase):
             response = get_json(url)
             self.assertEqual(response, payload)
             mr.assert_called_once_with(url)
+
+
+class TestMemoize(unittest.TestCase):
+    """Test memoization"""
+
+    def test_memoize(self):
+        class TestClass:
+
+            def a_method(self):
+                return 42
+
+            @memoize
+            def a_property(self):
+                return self.a_method()
+
+        test_obj = TestClass()
+        with patch.object(test_obj, 'a_method') as mock_a_method:
+            mock_a_method.return_value = 42
+
+            ans1 = test_obj.a_property
+            ans2 = test_obj.a_property
+            self.assertEqual(ans1, 42)
+            self.assertEqual(ans2, 42)
+            mock_a_method.assert_called_once()
